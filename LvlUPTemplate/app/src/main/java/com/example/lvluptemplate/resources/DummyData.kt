@@ -1,7 +1,11 @@
 package com.example.lvluptemplate.resources
-/*
-    // --- 1. TABLA DE CANCIONES (SongEntity) ---
-    object DummyData {
+
+import com.example.lvluptemplate.data.local.entities.GenreEntity
+import com.example.lvluptemplate.data.local.entities.SongEntity
+import com.example.lvluptemplate.data.local.entities.PlaylistEntity
+import com.example.lvluptemplate.data.local.entities.PlaylistSongCrossRef
+
+object DummyData {
     val genres = listOf(
         GenreEntity("g1", "R&B / Soul", "Vibras suaves y voces profundas"),
         GenreEntity("g2", "Urbano Latino", "Reggaeton, Trap y el sazón del Caribe"),
@@ -29,7 +33,7 @@ package com.example.lvluptemplate.resources
         SongEntity("s8", "Tití Me Preguntó", "Bad Bunny", "Un Verano Sin Ti", "https://i.scdn.co/image/ab67616d0000b27349d694203245f241a1bcaa72", "g2"),
 
         // Daft Punk -> Electrónica / Dance (g4)
-        SongEntity("s9", "Something About Us", "Daft Punk", "Discovery", "https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/0x1900-000000-80-0-0.jpg"", "g4"),
+        SongEntity("s9", "Something About Us", "Daft Punk", "Discovery", "https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/0x1900-000000-80-0-0.jpg", "g4"),
         SongEntity("s10", "Get Lucky", "Daft Punk", "Random Access Memories", "https://i.scdn.co/image/ab67616d0000b2739b9b36b0e22870b9f542d937", "g4"),
 
         // GIVEON -> R&B / Soul (g1)
@@ -95,4 +99,3 @@ package com.example.lvluptemplate.resources
         PlaylistSongCrossRef("p3", "s14")
     )
 }
- */

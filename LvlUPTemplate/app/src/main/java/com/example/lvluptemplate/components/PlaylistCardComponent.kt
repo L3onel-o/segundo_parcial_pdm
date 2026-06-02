@@ -24,14 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lvluptemplate.screen.Playlist
+import com.example.lvluptemplate.data.local.entities.PlaylistWithCount
 
 @Composable
-fun PlaylistCardComponent(playlist: Playlist) {
+fun PlaylistCardComponent(playlist: PlaylistWithCount, onClick: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {  }
+            .clickable { onClick() }
     ) {
 
         Box(

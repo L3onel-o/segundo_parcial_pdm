@@ -26,31 +26,28 @@ import com.example.lvluptemplate.components.CreatePlaylistDialog
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.PlaylistCardComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
-data class Playlist(val id: Int, val name: String, val tracksCount: Int)
-
-@Preview(showBackground = true)
 @Composable
-fun PlaylistsScreen() {
+fun PlaylistsScreen(
+    viewModel: MusicViewModel,
+    onPlaylistClick: (String) -> Unit,
+    onNavItemSelected: (Int) -> Unit
+) {
 
     var showDialog by remember { mutableStateOf(false) }
-
-    var playlists by remember {
-        mutableStateOf(
-            listOf(
-                Playlist(1, "Daily Drive", 45),
-                Playlist(2, "Cyberpunk Beats", 28),
-                Playlist(3, "Chill Gaming", 60),
-                Playlist(4, "Elektro Sessions", 19)
-            )
-        )
-    }
+    
+    // Observar playlists del ViewModel
+    val playlists by viewModel.allPlaylists.collectAsState()
 
     Scaffold(
         bottomBar = {
             Column {
                 MiniPlayerComponent()
-                SimpleBottomBar()
+                SimpleBottomBar(
+                    selectedIndex = 2,
+                    onItemSelected = onNavItemSelected
+                )
             }
         }
     ) { paddingValues ->
@@ -90,8 +87,7 @@ fun PlaylistsScreen() {
                         CreatePlaylistDialog(
                             onDismiss = { showDialog = false },
                             onPlaylistCreated = { playlistName ->
-                                val newPlaylist = Playlist(playlists.size + 1, playlistName, 0)
-                                playlists = playlists + newPlaylist
+                                viewModel.createPlaylist(playlistName)
                                 showDialog = false
                             }
                         )
@@ -101,7 +97,12 @@ fun PlaylistsScreen() {
 
 
                 items(playlists) { playlist ->
-                    PlaylistCardComponent(playlist = playlist)
+                    PlaylistCardComponent(
+                        playlist = playlist,
+                        onClick = {
+                            onPlaylistClick(playlist.id)
+                        }
+                    )
                 }
 
             }

@@ -15,9 +15,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,15 +33,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.lvluptemplate.data.local.entities.SongEntity
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 @Composable
-fun TrackRowItem(title: String) {
-    val context  = LocalContext.current
+fun TrackRowItem(
+    song: SongEntity,
+    showRemoveOption: Boolean = false,
+    playlistId: String? = null,
+    viewModel: MusicViewModel? = null
+) {
+    val context = LocalContext.current
+    val expandedMenu = remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 12.dp)
-            .clickable{ Toast.makeText(context,"Reproduciendo",Toast.LENGTH_SHORT).show()},
+            .clickable { Toast.makeText(context, "Reproduciendo: ${song.title}", Toast.LENGTH_SHORT).show() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -49,9 +63,8 @@ fun TrackRowItem(title: String) {
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    //Cambiar model por las imagenes de las canciones
-                    model = "https://i.scdn.co/image/ab67616d0000b27390af5246adcaa93acb721c17",
-                    contentDescription = "Cover de portada",
+                    model = song.coverUrl,
+                    contentDescription = "Cover de ${song.title}",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()
                 )
@@ -60,19 +73,76 @@ fun TrackRowItem(title: String) {
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = title,
+                text = song.title,
                 color = Color(0xFF7E49C3),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Box {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "Track options",
-                tint = Color.Gray
+                tint = Color.Gray,
+                modifier = Modifier
+                    .clickable { expandedMenu.value = true }
+                    .padding(8.dp)
             )
+
+            DropdownMenu(
+                expanded = expandedMenu.value,
+                onDismissRequest = { expandedMenu.value = false },
+                modifier = Modifier.background(Color(0xFF2A2A2A))
+            ) {
+                if (showRemoveOption && playlistId != null && viewModel != null) {
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Eliminar",
+                                    tint = Color(0xFFFF6B6B),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text("Eliminar de playlist", color = Color.White)
+                            }
+                        },
+                        onClick = {
+                            viewModel.removeSongFromPlaylist(playlistId, song.id)
+                            Toast.makeText(
+                                context,
+                                "${song.title} eliminada de la playlist",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            expandedMenu.value = false
+                        }
+                    )
+                }
+
+                DropdownMenuItem(
+                    text = {
+                        Text("Reproducir", color = Color.White)
+                    },
+                    onClick = {
+                        Toast.makeText(context, "Reproduciendo: ${song.title}", Toast.LENGTH_SHORT).show()
+                        expandedMenu.value = false
+                    }
+                )
+
+                DropdownMenuItem(
+                    text = {
+                        Text("Ver detalles", color = Color.White)
+                    },
+                    onClick = {
+                        Toast.makeText(context, "Detalles: ${song.artist}", Toast.LENGTH_SHORT).show()
+                        expandedMenu.value = false
+                    }
+                )
+            }
         }
     }
 }
